@@ -1,0 +1,17 @@
+{
+  "name": "EkiBridge",
+  "short_name": "EkiBridge",
+  "description": "Ekiti citizen-to-government reporting prototype with live map pinning and optional account access.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f0e8",
+  "theme_color": "#0d3b2e",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

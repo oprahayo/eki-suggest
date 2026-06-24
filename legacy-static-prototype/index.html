@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="EkiBridge is an Ekiti citizen-to-government reporting prototype with live map pinning, anonymous reporting, and optional account access."
+    />
+    <meta name="theme-color" content="#0f3b2e" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <title>EkiBridge</title>
+  </head>
+  <body>
+    <div class="app-frame">
+      <div id="liveMap" class="map-layer" aria-label="Ekiti live map"></div>
+      <div class="map-wash"></div>
+      <div class="map-orb map-orb-a"></div>
+      <div class="map-orb map-orb-b"></div>
+
+      <header class="floating-topbar">
+        <button class="icon-button" id="menuButton" type="button" aria-label="Menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+
+        <div class="location-pill">
+          <span class="location-dot"></span>
+          <span id="locationPillText">Ado-Ekiti, Nigeria</span>
+        </div>
+
+        <div class="top-actions">
+          <button class="icon-button" id="alertsButton" type="button" aria-label="Alerts">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 4a4 4 0 0 0-4 4v2.4c0 .8-.3 1.5-.8 2.1L6 14h12l-1.2-1.5a3.3 3.3 0 0 1-.8-2.1V8a4 4 0 0 0-4-4Z"
+              />
+              <path d="M10 18a2 2 0 0 0 4 0" />
+            </svg>
+          </button>
+          <button
+            class="icon-button"
+            id="accountButton"
+            type="button"
+            aria-label="Account"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+              <path d="M5 19c1.8-3 4.3-4.5 7-4.5s5.2 1.5 7 4.5" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <section class="map-hero-copy">
+        <p class="eyebrow">Citizen To Government</p>
+        <h1>EkiBridge</h1>
+        <p>
+          The direct line between Ekiti residents and responsible government desks.
+        </p>
+      </section>
+
+      <section class="bottom-sheet" id="bottomSheet">
+        <div class="sheet-handle"></div>
+
+        <div class="sheet-header">
+          <div>
+            <p class="sheet-kicker">Report Center</p>
+            <h2>What should government act on?</h2>
+          </div>
+          <div class="sheet-header-actions">
+            <button class="ghost-button light" id="installButton" type="button" hidden>
+              Install
+            </button>
+            <button class="icon-button small" id="sheetToggleButton" type="button" aria-label="Expand report sheet">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 14 5-5 5 5" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="identity-tabs" id="identityTabs">
+          <button
+            class="identity-tab active"
+            data-identity-mode="anonymous"
+            type="button"
+          >
+            Report anonymously
+          </button>
+          <button class="identity-tab" data-identity-mode="login" type="button">
+            Log in
+          </button>
+          <button class="identity-tab" data-identity-mode="register" type="button">
+            Create account
+          </button>
+        </div>
+
+        <section class="success-inline" id="successPanel" hidden>
+          <p class="sheet-kicker">Submitted</p>
+          <h3>Your report is logged.</h3>
+          <p id="successMessage"></p>
+        </section>
+
+        <form id="reportForm" class="report-form">
+          <input id="identityModeInput" name="identityMode" type="hidden" value="anonymous" />
+
+          <div class="search-shell">
+            <div class="search-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M11 5a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z" />
+                <path d="m16 16 3.5 3.5" />
+              </svg>
+            </div>
+            <input
+              id="landmarkInput"
+              name="landmark"
+              type="text"
+              placeholder="Search street, ward, landmark, school, market..."
+            />
+          </div>
+
+          <div class="issue-chip-row" id="issueChipRow">
+            <button class="issue-chip" data-issue-type="Road and drainage" type="button">
+              Road
+            </button>
+            <button class="issue-chip" data-issue-type="Water and sanitation" type="button">
+              Water
+            </button>
+            <button class="issue-chip" data-issue-type="Electricity" type="button">
+              Power
+            </button>
+            <button class="issue-chip" data-issue-type="Security incident" type="button">
+              Safety
+            </button>
+            <button
+              class="issue-chip"
+              data-issue-type="Corruption or misconduct"
+              type="button"
+            >
+              Misconduct
+            </button>
+            <button class="issue-chip" data-issue-type="Other public complaint" type="button">
+              Other
+            </button>
+          </div>
+
+          <div class="meta-row">
+            <label class="field field-tight">
+              <span>Issue type</span>
+              <select id="issueTypeSelect" name="issueType" required>
+                <option value="">Choose a category</option>
+                <option value="Road and drainage">Road and drainage</option>
+                <option value="Water and sanitation">Water and sanitation</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Health and emergency">Health and emergency</option>
+                <option value="Security incident">Security incident</option>
+                <option value="Corruption or misconduct">Corruption or misconduct</option>
+                <option value="Other public complaint">Other public complaint</option>
+              </select>
+            </label>
+
+            <label class="field field-tight">
+              <span>Priority</span>
+              <select name="urgency" required>
+                <option value="Routine">Routine</option>
+                <option value="Urgent">Urgent</option>
+                <option value="Critical">Critical</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="status-row">
+            <div class="route-preview" id="routePreview">
+              Routing preview: Citizen Relations Desk
+            </div>
+            <div class="status-pill" id="locationSummaryPill">No map pin yet</div>
+          </div>
+
+          <div class="location-grid">
+            <label class="field field-tight">
+              <span>Local government</span>
+              <select id="lgaSelect" name="lga" required></select>
+            </label>
+
+            <label class="field field-tight">
+              <span>Town / community</span>
+              <select
+                id="communitySelect"
+                name="community"
+                required
+                disabled
+              ></select>
+            </label>
+
+            <label class="field field-tight">
+              <span>Ward</span>
+              <select id="wardSelect" name="ward" disabled></select>
+            </label>
+
+            <div class="location-actions">
+              <button class="action-button" id="locationButton" type="button">
+                Use my live location
+              </button>
+              <button class="ghost-button" id="clearMapButton" type="button">
+                Clear map pin
+              </button>
+            </div>
+          </div>
+
+          <label class="toggle">
+            <input type="checkbox" id="preciseLocationToggle" checked />
+            <span>Store exact coordinates when map pin or GPS is used</span>
+          </label>
+
+          <p class="helper-text" id="mapStatus">
+            Tap anywhere on the map to pin the exact spot of the issue.
+          </p>
+          <p class="helper-text" id="locationStatus">
+            Your structured Ekiti location is enough to route the report. The map pin
+            is optional but helpful.
+          </p>
+
+          <label class="field">
+            <span>Description</span>
+            <textarea
+              name="summary"
+              rows="5"
+              maxlength="1200"
+              placeholder="Explain the issue clearly. What happened, how long has it been happening, and what action should government take?"
+              required
+            ></textarea>
+          </label>
+
+          <section class="auth-panel" id="authPanel" hidden>
+            <div class="section-caption">Account access</div>
+            <p class="helper-text" id="authModeText">
+              Continue anonymously, or switch to log in / create account for follow-up.
+            </p>
+
+            <div class="auth-grid">
+              <label class="field field-tight auth-register-only" data-auth-visibility="register">
+                <span>Full name</span>
+                <input id="nameInput" name="name" type="text" autocomplete="name" />
+              </label>
+
+              <label class="field field-tight">
+                <span>Email</span>
+                <input id="emailInput" name="email" type="email" autocomplete="email" />
+              </label>
+
+              <label class="field field-tight">
+                <span>Phone</span>
+                <input id="phoneInput" name="phone" type="tel" autocomplete="tel" />
+              </label>
+
+              <label class="field field-tight">
+                <span>Password</span>
+                <input
+                  id="passwordInput"
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                />
+              </label>
+            </div>
+          </section>
+
+          <section class="evidence-strip">
+            <div>
+              <p class="section-caption">Evidence</p>
+              <p class="helper-text" id="evidenceStatus">
+                If live browser recording is unavailable on this phone, tapping
+                record opens the native camera recorder instead.
+              </p>
+            </div>
+
+            <div class="evidence-actions">
+              <input
+                id="attachmentInput"
+                name="attachment"
+                type="file"
+                accept="image/*,video/*,audio/*,.pdf"
+              />
+              <input
+                id="nativeVideoCapture"
+                type="file"
+                accept="video/*"
+                capture="environment"
+                class="visually-hidden-input"
+              />
+              <button class="action-button" id="startRecordingButton" type="button">
+                Record video
+              </button>
+              <button class="ghost-button" id="stopRecordingButton" type="button" disabled>
+                Stop
+              </button>
+              <button class="ghost-button" id="resetRecordingButton" type="button" disabled>
+                Clear
+              </button>
+            </div>
+          </section>
+
+          <div class="video-stage">
+            <video id="livePreview" playsinline muted></video>
+            <video id="recordedPreview" playsinline controls hidden></video>
+            <div class="video-overlay" id="videoOverlay">
+              <p>No video captured yet. Use the record button when ready.</p>
+            </div>
+          </div>
+
+          <div class="recorder-meta">
+            <div class="record-indicator" id="recordIndicator">
+              <span class="record-dot"></span>
+              <span id="recordStateText">Ready</span>
+            </div>
+            <p class="helper-text" id="recordingTime">00:00 / 01:00</p>
+          </div>
+
+          <label class="consent-check">
+            <input type="checkbox" name="consent" required />
+            <span>
+              I understand false reports may be flagged, but valid reports must stay
+              traceable in the audit trail.
+            </span>
+          </label>
+
+          <div class="submit-bar">
+            <button class="submit-button" id="submitButton" type="submit">
+              Submit anonymously
+            </button>
+            <p class="helper-text">
+              This prototype stores reports on this device until the real backend is ready.
+            </p>
+          </div>
+        </form>
+      </section>
+
+      <section class="side-drawer">
+        <div class="drawer-section">
+          <p class="sheet-kicker">Backend note</p>
+          <h3>Analytics and issue intelligence come next.</h3>
+          <ul class="insight-list">
+            <li>Heatmaps by LGA, town, ward, and exact pin cluster</li>
+            <li>Top complaint categories and fastest-rising issue types</li>
+            <li>Loudest hotspots and repeat complaint locations</li>
+            <li>Response times, backlog, and unresolved desks</li>
+          </ul>
+        </div>
+
+        <div class="drawer-section">
+          <p class="sheet-kicker">Saved activity</p>
+          <h3>Reports on this device</h3>
+          <div id="ledgerList" class="ledger-list">
+            <p class="ledger-empty">
+              No reports stored yet. Send one to preview the tracking flow.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <nav class="bottom-nav" aria-label="Primary">
+        <button class="nav-item" id="homeNavButton" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 11.5 12 6l7 5.5V19H5z" />
+          </svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-item active" id="reportNavButton" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3a5 5 0 0 1 5 5c0 4.1-5 10-5 10S7 12.1 7 8a5 5 0 0 1 5-5Z" />
+            <circle cx="12" cy="8" r="1.6" />
+          </svg>
+          <span>Report</span>
+        </button>
+        <button class="nav-item" id="trackNavButton" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 7h12M6 12h12M6 17h8" />
+          </svg>
+          <span>Track</span>
+        </button>
+        <button class="nav-item" id="navAccountButton" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+            <path d="M5 19c1.8-3 4.3-4.5 7-4.5s5.2 1.5 7 4.5" />
+          </svg>
+          <span>Account</span>
+        </button>
+      </nav>
+
+      <div class="modal-layer" id="modalLayer" hidden>
+        <button class="modal-backdrop" id="modalBackdrop" type="button" aria-label="Close popup"></button>
+
+        <section class="popup-sheet" id="menuPopup" hidden>
+          <div class="popup-head">
+            <div>
+              <p class="sheet-kicker">Quick Menu</p>
+              <h3>Use one screen, not many pages.</h3>
+            </div>
+            <button class="icon-button small popup-close" type="button" data-close-popup>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 7 10 10M17 7 7 17" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="popup-action-list">
+            <button class="popup-action" type="button" data-popup-action="open-report">
+              <strong>New report</strong>
+              <span>Jump straight back into the report sheet.</span>
+            </button>
+            <button class="popup-action" type="button" data-popup-action="open-history">
+              <strong>Saved activity</strong>
+              <span>Review reports already stored on this device.</span>
+            </button>
+            <button class="popup-action" type="button" data-popup-action="open-account">
+              <strong>Account options</strong>
+              <span>Switch between anonymous, log in, and create account.</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="popup-sheet" id="alertsPopup" hidden>
+          <div class="popup-head">
+            <div>
+              <p class="sheet-kicker">Notifications</p>
+              <h3>Status and routing alerts.</h3>
+            </div>
+            <button class="icon-button small popup-close" type="button" data-close-popup>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 7 10 10M17 7 7 17" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="popup-stack">
+            <article class="alert-card">
+              <strong>Routing intelligence</strong>
+              <p>Back-office alerts will later show missed SLAs, unresolved complaints, and hot zones here.</p>
+            </article>
+            <article class="alert-card">
+              <strong>Whistleblowing queue</strong>
+              <p>Sensitive misconduct reports should notify a restricted integrity desk only.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="popup-sheet" id="accountPopup" hidden>
+          <div class="popup-head">
+            <div>
+              <p class="sheet-kicker">Account</p>
+              <h3>Choose how you want to send reports.</h3>
+            </div>
+            <button class="icon-button small popup-close" type="button" data-close-popup>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 7 10 10M17 7 7 17" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="popup-stack">
+            <button class="account-mode-card" type="button" data-account-mode="anonymous">
+              <strong>Anonymous</strong>
+              <span>Send a report without creating an account first.</span>
+            </button>
+            <button class="account-mode-card" type="button" data-account-mode="login">
+              <strong>Log in</strong>
+              <span>Use an existing account to track actions and updates.</span>
+            </button>
+            <button class="account-mode-card" type="button" data-account-mode="register">
+              <strong>Create account</strong>
+              <span>Save your history and receive follow-up on submitted issues.</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="popup-sheet" id="historyPopup" hidden>
+          <div class="popup-head">
+            <div>
+              <p class="sheet-kicker">Saved Activity</p>
+              <h3>Reports on this device.</h3>
+            </div>
+            <button class="icon-button small popup-close" type="button" data-close-popup>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 7 10 10M17 7 7 17" />
+              </svg>
+            </button>
+          </div>
+
+          <div id="historyList" class="popup-ledger-list">
+            <p class="ledger-empty">No reports stored yet. Send one to preview the tracking flow.</p>
+          </div>
+        </section>
+
+        <section class="popup-sheet" id="detailPopup" hidden>
+          <div class="popup-head">
+            <div>
+              <p class="sheet-kicker">Report Detail</p>
+              <h3 id="detailTitle">Selected report</h3>
+            </div>
+            <button class="icon-button small popup-close" type="button" data-close-popup>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 7 10 10M17 7 7 17" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="detail-grid">
+            <div class="detail-row">
+              <span>Tracking ID</span>
+              <strong id="detailTrackingId">-</strong>
+            </div>
+            <div class="detail-row">
+              <span>Status</span>
+              <strong id="detailStatus">-</strong>
+            </div>
+            <div class="detail-row">
+              <span>Route</span>
+              <strong id="detailDesk">-</strong>
+            </div>
+            <div class="detail-row detail-wide">
+              <span>Location</span>
+              <strong id="detailLocation">-</strong>
+            </div>
+            <div class="detail-row detail-wide">
+              <span>Summary</span>
+              <p id="detailSummary">-</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="toast" id="toast" hidden></div>
+    </div>
+
+    <template id="ledgerItemTemplate">
+      <article class="ledger-item">
+        <div class="ledger-top">
+          <p class="ledger-id"></p>
+          <span class="ledger-status"></span>
+        </div>
+        <h4 class="ledger-title"></h4>
+        <p class="ledger-route"></p>
+        <p class="ledger-meta"></p>
+      </article>
+    </template>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+      defer
+    ></script>
+    <script src="ekiti-data.js" defer></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>

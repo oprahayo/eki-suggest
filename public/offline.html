@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0f5c43" />
+    <title>EkiSignal Offline</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f7f0;
+        --fg: #10241a;
+        --muted: #5b6d64;
+        --primary: #0f5c43;
+        --accent: #d9ad45;
+        --card: rgba(255, 255, 255, 0.88);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: calc(1.5rem + env(safe-area-inset-top)) 1.25rem
+          calc(1.5rem + env(safe-area-inset-bottom));
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        color: var(--fg);
+        background:
+          radial-gradient(circle at top, rgba(217, 173, 69, 0.18), transparent 30%),
+          radial-gradient(circle at 85% 18%, rgba(15, 92, 67, 0.12), transparent 24%),
+          linear-gradient(180deg, #f8f7f2 0%, #eef4ee 100%);
+      }
+
+      .shell {
+        width: min(100%, 28rem);
+        border-radius: 2rem;
+        background: var(--card);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 28px 72px -42px rgba(8, 28, 20, 0.46);
+        backdrop-filter: blur(20px);
+        padding: 1.5rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 999px;
+        background: rgba(15, 92, 67, 0.08);
+        color: var(--primary);
+        padding: 0.5rem 0.85rem;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .mark {
+        margin-top: 1rem;
+        width: 4.5rem;
+        height: 4.5rem;
+        border-radius: 1.5rem;
+        display: grid;
+        place-items: center;
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 24px 54px -34px rgba(15, 92, 67, 0.9);
+      }
+
+      h1 {
+        margin: 1rem 0 0;
+        font-size: 2rem;
+        line-height: 1.05;
+      }
+
+      p {
+        margin: 0.85rem 0 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      ul {
+        margin: 1rem 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      li {
+        border-radius: 1.2rem;
+        background: rgba(16, 36, 26, 0.04);
+        padding: 0.9rem 1rem;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      strong {
+        color: var(--fg);
+      }
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1.25rem;
+        min-height: 3rem;
+        padding: 0 1rem;
+        border-radius: 1rem;
+        background: var(--primary);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+        box-shadow: 0 24px 52px -34px rgba(15, 92, 67, 0.82);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <div class="badge">EkiSignal Offline</div>
+      <div class="mark" aria-hidden="true">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M12 21s-6-5.2-6-10a6 6 0 1 1 12 0c0 4.8-6 10-6 10Z"
+            fill="#f8f7f2"
+          />
+          <circle cx="12" cy="10" r="2.5" fill="#0f5c43" />
+        </svg>
+      </div>
+      <h1>You are offline right now.</h1>
+      <p>
+        EkiSignal still keeps the app shell available so citizens can reopen the
+        platform quickly, review saved drafts, and continue once signal returns.
+      </p>
+      <ul>
+        <li><strong>Drafts stay local:</strong> typed report details remain on this device.</li>
+        <li><strong>Queued text reports can recover:</strong> reconnect and reopen the app.</li>
+        <li><strong>Media uploads need connection:</strong> photos and video should be added again before send.</li>
+      </ul>
+      <a href="/">Open EkiSignal</a>
+    </main>
+  </body>
+</html>
