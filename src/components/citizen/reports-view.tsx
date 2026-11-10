@@ -130,7 +130,7 @@ export function ReportsView() {
       >
         <AuthRequiredCard
           title="Sign in to keep your personal report history in one place"
-          description="My Reports is where your submitted issues, review outcomes, civic score decisions, and badge-review cases stay organized. Public issue browsing and tracking still remain open without a login."
+          description="My Reports will hold your private drafts and case history when real intake is connected. For now, only this device's preview is available; public demo map browsing remains open without login."
         />
       </PageShell>
     )
@@ -154,7 +154,7 @@ export function ReportsView() {
       <div className="space-y-5">
         <div className="flex flex-wrap gap-2">
           {[
-            { label: "Verified", value: civicProfile.verifiedReports, tone: "text-primary" },
+            { label: "Demo verified", value: civicProfile.verifiedReports, tone: "text-primary" },
             { label: "Badge review", value: civicProfile.rewardEligibleCount, tone: "text-foreground" },
             { label: "Resolved", value: reportCounts.find((item) => item.value === "resolved")?.count ?? 0, tone: "text-foreground" },
             { label: "In progress", value: reportCounts.find((item) => item.value === "in-progress")?.count ?? 0, tone: "text-foreground" },
@@ -178,8 +178,8 @@ export function ReportsView() {
                 <p className="text-sm font-semibold text-primary">Offline outbox</p>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
                   {isSyncingPendingSubmissions
-                    ? "Saved submissions are being restored into your report history now."
-                    : "These reports were saved while you were offline and will send automatically when signal returns."}
+                    ? "Restoring your queued text to this device's local history."
+                    : "These items are on this device only and will not be sent automatically to a government office."}
                 </p>
               </div>
               <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.46)]">
@@ -258,7 +258,7 @@ export function ReportsView() {
                 </InputGroup>
               </div>
               <p className="text-sm leading-6 text-muted-foreground">
-                Open any report to review its current status and public timeline.
+                Open a device-only draft or fictional report to review its preview. Official status updates are not connected.
               </p>
             </div>
             <div className="overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

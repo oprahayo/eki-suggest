@@ -8,7 +8,7 @@ on:
 
 jobs:
   next-checks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -28,3 +28,35 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Verify public map privacy, redaction and text-only chat
+        run: node --test tests/privacy-map.test.mjs
+
+      - name: Build the Next.js application
+        run: npm run build
+
+      - name: Install temporary Chromium reviewer
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Review real chat and Ekiti public map in Chromium
+        run: |
+          npm run start -- --hostname 127.0.0.1 --port 4174 > "$RUNNER_TEMP/ekisignal-next.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 45); do
+            if curl --fail --silent http://127.0.0.1:4174/ > /dev/null; then break; fi
+            sleep 2
+          done
+          curl --fail --silent http://127.0.0.1:4174/ > /dev/null
+          node tests/visual-chat.mjs
+
+      - name: Upload reviewed UI screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ekisignal-public-map-chat-review
+          path: artifacts/ekisignal-review/
+          if-no-files-found: ignore
+          retention-days: 5

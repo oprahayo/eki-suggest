@@ -68,7 +68,7 @@ export function TrackReportView() {
     <PageShell
       eyebrow="Transparency"
       title="Track a report"
-      description="Search with a tracking number to see the current status, public timeline, assigned office, submitted evidence, and accountability notes."
+      description="Look up a saved device-only reference or explore demonstration timelines. Real cross-device and government updates are not enabled."
       actions={
         <Link href="/report/new" className={cn(buttonVariants({ size: "lg" }), "rounded-[1.25rem]")}>
           <ShieldCheck data-icon="inline-start" />
@@ -95,7 +95,13 @@ export function TrackReportView() {
           ) : trackedReport ? (
             <div className="space-y-6">
               <TrackingResultCard report={trackedReport} />
-              <TrackingStatusTimeline report={trackedReport} />
+              {trackedReport.deliveryState === "device-only" ? (
+                <p role="status" className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+                  This reference and its information exist only on this device. No government office has received or acknowledged the report, and it is not visible on the public map.
+                </p>
+              ) : (
+                <TrackingStatusTimeline report={trackedReport} />
+              )}
               <TrackingMediaGallery media={trackedReport.media} />
             </div>
           ) : (
@@ -115,7 +121,7 @@ export function TrackReportView() {
             emptyMessage="No tracked tickets yet. Once you search a report or submit one from this device, it will appear here for quick access."
           />
 
-          {trackedReport ? (
+          {trackedReport && trackedReport.deliveryState !== "device-only" ? (
             <TrackingPublicNotes report={trackedReport} />
           ) : (
             <section className="rounded-[2rem] border border-white/60 bg-white/84 p-5 shadow-[0_30px_90px_-52px_rgba(12,30,22,0.38)] backdrop-blur sm:p-6">

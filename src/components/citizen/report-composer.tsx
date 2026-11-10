@@ -119,12 +119,19 @@ const reportSchema = z.object({
   ward: z.string().min(1, "Select the ward."),
   area: z.string().min(3, "Add the street, corridor, or landmark area."),
   landmark: z.string().max(140, "Keep the landmark note under 140 characters."),
-  name: z.string().min(2, "Add a contact name."),
-  phone: z.string().min(7, "Add a reachable phone number."),
+  name: z.string(),
+  phone: z.string(),
   email: z.union([z.literal(""), z.string().trim().email("Enter a valid email address.")]),
   consent: z.boolean().refine((value) => value, {
     message: "Please confirm the privacy and moderation notice before submitting.",
   }),
+}).superRefine((values, context) => {
+  if (!values.isAnonymous && values.name.trim().length < 2) {
+    context.addIssue({ code: "custom", path: ["name"], message: "Add a contact name." })
+  }
+  if (!values.isAnonymous && values.phone.trim().length < 7) {
+    context.addIssue({ code: "custom", path: ["phone"], message: "Add a reachable phone number." })
+  }
 })
 
 type ReportFormValues = z.infer<typeof reportSchema>
@@ -142,7 +149,7 @@ const wizardSteps: WizardStep[] = [
     id: "type",
     shortLabel: "Type",
     label: "Choose type",
-    description: "Pick the kind of submission you want to send into government channels.",
+    description: "Choose the type of private draft. Government delivery is not yet connected.",
     fields: ["kind"],
   },
   {
@@ -690,7 +697,7 @@ export function ReportComposer() {
 
     if (result.outcome === "queued" && result.pendingSubmission) {
       const pendingSubmission = result.pendingSubmission
-      toast.success("Your report was saved offline and queued for automatic send.")
+      toast.message("Text saved in this device's outbox. It will not be sent to a government office automatically.")
       startPageTransition(() => {
         startTransition(() => {
           router.push(`/report/success?queued=${encodeURIComponent(pendingSubmission.id)}`)
@@ -707,7 +714,7 @@ export function ReportComposer() {
     const submittedReport = result.report
 
     clearDraft()
-    toast.success(`Tracking number ${submittedReport.trackingNumber} created successfully.`)
+    toast.message(`Local reference ${submittedReport.trackingNumber} created on this device. Not submitted to government.`)
     startPageTransition(() => {
       startTransition(() => {
         router.push(
@@ -1107,10 +1114,10 @@ export function ReportComposer() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-semibold text-foreground">
-                          Submit this report as anonymous in public views
+                          Prepare this report without adding your name
                         </p>
                         <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                          Your contact details stay private to moderation staff, but the public timeline will not display your identity.
+                          Your name and phone are optional in anonymous mode. No draft appears publicly until moderation approves a safe version.
                         </p>
                       </div>
                       <span
@@ -1166,12 +1173,12 @@ export function ReportComposer() {
                   <FieldGroup>
                     {values.isAnonymous ? (
                       <Alert className="rounded-[1.5rem] border-primary/18 bg-primary/[0.06] text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.46)]">
-                        Anonymous mode is on. These contact details remain private and are not shown on the public tracking timeline.
+                        Anonymous mode is on. You can leave name, phone and email blank. Avoid identifying details in photos, landmarks and descriptions.
                       </Alert>
                     ) : null}
 
                     <Field data-invalid={Boolean(errors.name)}>
-                      <FieldLabel htmlFor="contact-name">Name</FieldLabel>
+                      <FieldLabel htmlFor="contact-name">Name {values.isAnonymous ? "(optional)" : "(required)"}</FieldLabel>
                       <InputGroup>
                         <InputGroupInput
                           id="contact-name"
@@ -1184,7 +1191,7 @@ export function ReportComposer() {
                     </Field>
 
                     <Field data-invalid={Boolean(errors.phone)}>
-                      <FieldLabel htmlFor="contact-phone">Phone</FieldLabel>
+                      <FieldLabel htmlFor="contact-phone">Phone {values.isAnonymous ? "(optional)" : "(required)"}</FieldLabel>
                       <InputGroup>
                         <InputGroupAddon>
                           <InputGroupText>+234</InputGroupText>

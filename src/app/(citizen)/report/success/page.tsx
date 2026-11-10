@@ -145,7 +145,7 @@ export default function ReportSuccessPage() {
                   <div className="rounded-[1.35rem] bg-foreground/[0.04] px-4 py-3">
                     <p className="text-sm font-semibold text-foreground">3. Submit to get a ticket</p>
                     <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                      Once sent, EkiSignal will generate the tracking number immediately.
+                      When a verified cross-device intake service launches, it will issue a genuine server reference.
                     </p>
                   </div>
                 </div>
@@ -179,8 +179,8 @@ export default function ReportSuccessPage() {
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   {pendingSubmission
-                    ? `Your ${pendingSubmission.payload.category.toLowerCase()} ${pendingSubmission.payload.kind} will be submitted automatically when signal comes back.`
-                    : "Your saved report will be restored into the citizen timeline automatically when connectivity returns."}
+                    ? `Your ${pendingSubmission.payload.category.toLowerCase()} ${pendingSubmission.payload.kind} will be restored locally when signal comes back. Automatic server submission is not active.`
+                    : "Your saved report will reappear on this device when connectivity returns."}
                 </p>
               </div>
 
@@ -228,15 +228,15 @@ export default function ReportSuccessPage() {
                     </p>
                   </div>
                   <div className="rounded-[1.35rem] bg-foreground/[0.04] px-4 py-3">
-                    <p className="text-sm font-semibold text-foreground">2. Ticket is created</p>
+                    <p className="text-sm font-semibold text-foreground">2. Saved locally</p>
                     <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                      The queued report becomes a normal tracked case and appears in your reports list.
+                      The queued text becomes a device-only record. It is not a government case.
                     </p>
                   </div>
                   <div className="rounded-[1.35rem] bg-foreground/[0.04] px-4 py-3">
-                    <p className="text-sm font-semibold text-foreground">3. Updates stay visible</p>
+                    <p className="text-sm font-semibold text-foreground">3. No official updates yet</p>
                     <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                      Once the ticket exists, its timeline and office routing become visible from the tracking page.
+                      Verified official updates require a future authenticated intake and office workflow.
                     </p>
                   </div>
                 </div>
@@ -251,9 +251,9 @@ export default function ReportSuccessPage() {
   return (
     <div className="px-4 pb-8 pt-3 sm:px-6">
       <PageShell
-        eyebrow="Submitted"
-        title="Your ticket is now live"
-        description="EkiSignal created a tracking number immediately and pushed the report into the right queue preview for moderation and routing."
+        eyebrow="Saved on device"
+        title="Your private report draft is ready"
+        description="This reference exists only in this browser. Your report was not sent to a government office or shared case database."
         compact
       >
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -262,22 +262,22 @@ export default function ReportSuccessPage() {
 
             <div className="mt-6">
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary/72">
-                Tracking number
+                Local reference
               </p>
               <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-foreground">
                 {trackingNumber || "Pending"}
               </h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">
                 {report
-                  ? `Your ${report.kind} has been routed first to ${report.assignedOfficeName}.`
-                  : "Your report is now queued for moderation, routing, and public-safe status updates."}
+                  ? `Suggested desk: ${report.assignedOfficeName}. This office has not received your report.`
+                  : "This is a local preview. Official intake and publication are not active."}
               </p>
             </div>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               <div className="rounded-[1.35rem] bg-primary/[0.05] px-4 py-3">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-primary/70">
-                  Next expected review
+                  Illustrative review window
                 </p>
                 <p className="mt-2 text-sm font-semibold text-foreground">
                   {report?.estimatedResponse ?? "First review window will appear once routing completes."}
@@ -285,10 +285,10 @@ export default function ReportSuccessPage() {
               </div>
               <div className="rounded-[1.35rem] bg-primary/[0.05] px-4 py-3">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-primary/70">
-                  Public identity
+                  Privacy status
                 </p>
                 <p className="mt-2 text-sm font-semibold text-foreground">
-                  {report?.isAnonymous ? "Anonymous in public timeline" : "Named submission"}
+                  {report?.isAnonymous ? "Anonymous local draft" : "Details saved only on this device"}
                 </p>
               </div>
             </div>
@@ -299,7 +299,7 @@ export default function ReportSuccessPage() {
                 className={cn(buttonVariants({ size: "lg" }), "rounded-[1.2rem]")}
               >
                 <ShieldCheck data-icon="inline-start" />
-                Track this report
+                View local record
               </Link>
               <Link
                 href="/report/new"
@@ -309,7 +309,7 @@ export default function ReportSuccessPage() {
                 )}
               >
                 <Sparkles data-icon="inline-start" />
-                Submit another report
+                Prepare another report
               </Link>
               <Link
                 href="/"
@@ -333,19 +333,19 @@ export default function ReportSuccessPage() {
                 <div className="rounded-[1.35rem] bg-foreground/[0.04] px-4 py-3">
                   <p className="text-sm font-semibold text-foreground">1. Screening and moderation</p>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                    The report is checked for safety, completeness, and duplicate issues.
+                    In the future, a verified moderation team will check reports before any public display.
                   </p>
                 </div>
                 <div className="rounded-[1.35rem] bg-foreground/[0.04] px-4 py-3">
-                  <p className="text-sm font-semibold text-foreground">2. Assignment into a live queue</p>
+                  <p className="text-sm font-semibold text-foreground">2. Verified office assignment</p>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                    Routing rules or an admin send it to the correct office or handler desk.
+                    A future approved handler must acknowledge receipt; suggested routing is not delivery.
                   </p>
                 </div>
                 <div className="rounded-[1.35rem] bg-foreground/[0.04] px-4 py-3">
                   <p className="text-sm font-semibold text-foreground">3. Transparent progress updates</p>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                    Public-safe notes and status changes appear on the tracking page over time.
+                    Only reviewed updates from authenticated staff may appear on the future live case timeline.
                   </p>
                 </div>
               </div>
@@ -361,7 +361,7 @@ export default function ReportSuccessPage() {
                     Keep the tracking number safe
                   </p>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                    You can return later with {trackingNumber || "your ticket number"} to check status even without a full account system.
+                    You can reopen {trackingNumber || "this local reference"} only on this device. It cannot be tracked on another phone or treated as a government receipt.
                   </p>
                 </div>
               </div>

@@ -13,6 +13,12 @@ export async function GET(
     }>
   }
 ) {
+  if (process.env.EKISIGNAL_REAL_INTAKE_ENABLED !== "true") {
+    return NextResponse.json(
+      { ok: false, error: "Live tracking is not enabled. Local example tickets are not server records." },
+      { status: 503, headers: { "Cache-Control": "no-store" } }
+    )
+  }
   try {
     const { trackingNumber } = await context.params
     const data = await getPublicReportTracking(trackingNumber)

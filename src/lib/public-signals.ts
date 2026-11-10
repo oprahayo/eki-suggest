@@ -125,10 +125,18 @@ export function resolvePublicSignalCoordinates(
 }
 
 export function materializePublicSignalReports(reports: ReportRecord[]) {
-  const publicReports = reports.filter((report) => report.isPublic)
+  // Fail closed: device-created and previously cached submissions never join
+  // the public map, even if a legacy local draft had isPublic=true.
+  // Live publication requires a separate moderator-approved server projection.
+  const publicReports = reports.filter((report) => report.isPublic && report.source === "demo")
 
   return publicReports.map((report) => ({
     ...report,
+    // Never expose reporter contacts or internal activity through a map.
+    contact: { name: "", phone: "", email: "" },
+    updates: report.updates.filter((item) => item.visibility === "public"),
+    mapPositionKind: report.mapPositionKind ??
+      (report.location.coordinates ? "provided" : "approximate"),
     location: {
       ...report.location,
       coordinates: resolvePublicSignalCoordinates(report, publicReports),

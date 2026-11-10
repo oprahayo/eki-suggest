@@ -168,7 +168,7 @@ export interface NotifyOfficeInput {
 
 export interface SubmitCitizenReportResult {
   report: ReportRow
-  assignment: AssignmentRow
+  assignment: AssignmentRow | null
   routing: RouteReportResult
   trackingNumber: string
 }
@@ -971,6 +971,8 @@ export async function submitCitizenReport(
         description: parsed.description,
         landmark_note: parsed.landmarkNote?.trim() || null,
         is_anonymous: parsed.isAnonymous,
+        public_tracking_enabled: false,
+        moderation_flag: "review",
         contact_name: parsed.contactName?.trim() || null,
         contact_phone: parsed.contactPhone?.trim() || null,
         contact_email: parsed.contactEmail?.trim() || null,
@@ -1008,8 +1010,8 @@ export async function submitCitizenReport(
         report_id: createdReport.id,
         status: "Received",
         title: parsed.reportTypeCode === "suggestion" ? "Suggestion received" : "Report received",
-        note: "Your submission has been logged and is awaiting automated routing.",
-        visibility: "public",
+        note: "Report privately recorded for moderation; no government receipt or assignment is confirmed.",
+        visibility: "internal",
         actor_name_snapshot: "EkiSignal Intake",
         actor_role_snapshot: "Citizen platform",
       }))
@@ -1049,21 +1051,9 @@ export async function submitCitizenReport(
     client
   )
 
-  const assignmentResult = await assignReport(
-    {
-      reportId: createdReport.id,
-      officeId: routing.office.id,
-      actorUserId: null,
-      actorName: "Routing Engine",
-      actorRole: routing.isFallback ? "Fallback routing" : "Automation",
-      assignmentMode: routing.isFallback ? "moderation" : "routing",
-      routingRuleId: routing.rule?.id ?? null,
-      note: routing.reason,
-      status: "Assigned",
-      visibility: "public",
-    },
-    client
-  )
+  // A routing suggestion is NOT evidence that a real government office
+  // accepted or received this case. Moderators must verify and dispatch it
+  // separately, with an auditable handoff, before any real office assignment.
 
   await notifyCitizen(
     {
@@ -1073,19 +1063,20 @@ export async function submitCitizenReport(
       contactPhone: createdReport.contact_phone,
       kind: "submission_confirmation",
       title: `Tracking number ${createdReport.tracking_number} created`,
-      body: `Your ${reportType.label.toLowerCase()} has been received and routed to ${routing.office.name}.`,
+      body: `Your ${reportType.label.toLowerCase()} has been privately recorded for moderation. No government office receipt is confirmed.`,
       metadata: {
         trackingNumber: createdReport.tracking_number,
-        assignedOffice: routing.office.name,
+        suggestedOffice: routing.office.name,
         isFallback: routing.isFallback,
+        deliveryConfirmed: false,
       },
     },
     client
   )
 
   return {
-    report: assignmentResult.report,
-    assignment: assignmentResult.assignment,
+    report: createdReport,
+    assignment: null,
     routing,
     trackingNumber: createdReport.tracking_number,
   }

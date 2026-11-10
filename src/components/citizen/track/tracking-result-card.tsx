@@ -57,7 +57,7 @@ export function TrackingResultCard({ report }: { report: ReportRecord }) {
               {formatLagosTimestamp(report.updatedAt)}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              {report.verificationLabel ?? "Public-safe update visible"}
+              {report.deliveryState === "device-only" ? "Local-only record; not officially received" : report.verificationLabel ?? "Fictional preview update"}
             </p>
           </div>
         </div>
@@ -66,7 +66,7 @@ export function TrackingResultCard({ report }: { report: ReportRecord }) {
       <div className="grid gap-3 px-5 py-5 sm:grid-cols-2 sm:px-6">
         <div className="surface-muted rounded-[1.45rem] px-4 py-3.5">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Assigned office
+            {report.deliveryState === "device-only" ? "Suggested desk (not contacted)" : "Example handling office"}
           </p>
           <p className="mt-2 text-sm font-semibold text-foreground">
             {report.assignedOfficeName || "Awaiting assignment"}
@@ -74,7 +74,7 @@ export function TrackingResultCard({ report }: { report: ReportRecord }) {
         </div>
         <div className="surface-muted rounded-[1.45rem] px-4 py-3.5">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Date submitted
+            {report.deliveryState === "device-only" ? "Saved on device" : "Example submission date"}
           </p>
           <p className="mt-2 text-sm font-semibold text-foreground">
             {formatLagosTimestamp(report.createdAt)}
@@ -95,7 +95,7 @@ export function TrackingResultCard({ report }: { report: ReportRecord }) {
           </p>
           <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-foreground">
             <Clock3 className="size-4 text-primary" />
-            <span>{report.status}</span>
+            <span>{report.deliveryState === "device-only" ? "Local draft · Not submitted" : report.status}</span>
           </p>
         </div>
         <div className="surface-muted rounded-[1.45rem] px-4 py-3.5">

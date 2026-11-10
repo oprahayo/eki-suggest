@@ -191,8 +191,24 @@ create table public.reports (
   contact_name text,
   contact_phone text,
   contact_email citext,
-  public_tracking_enabled boolean not null default true,
-  moderation_flag public.moderation_flag not null default 'none',
+  -- A new citizen report stays private until an authenticated moderator
+  -- approves a separately reviewed, redacted public summary.
+  public_tracking_enabled boolean not null default false,
+  public_approved_at timestamptz,
+  public_approved_by uuid references auth.users(id) on delete set null,
+  public_title text,
+  public_description text,
+  public_area_label text,
+  moderation_flag public.moderation_flag not null default 'review',
+  constraint reports_publication_requires_review check (
+    not public_tracking_enabled or (
+      public_approved_at is not null
+      and public_approved_by is not null
+      and nullif(btrim(public_title), '') is not null
+      and nullif(btrim(public_description), '') is not null
+      and moderation_flag = 'none'
+    )
+  ),
   duplicate_of_report_id uuid references public.reports(id) on delete set null,
   estimated_response_text text,
   source_channel text not null default 'web',
@@ -489,8 +505,8 @@ begin
   select jsonb_build_object(
     'id', r.id,
     'trackingNumber', r.tracking_number,
-    'title', r.title,
-    'description', r.description,
+    'title', r.public_title,
+    'description', r.public_description,
     'status', r.current_status,
     'severity', r.severity,
     'reportType', rt.label,
@@ -498,13 +514,15 @@ begin
     'location', jsonb_build_object(
       'state', l.state_name,
       'lga', l.name,
-      'ward', w.name,
-      'community', loc.community,
-      'area', loc.area,
-      'street', loc.street_address,
-      'landmark', loc.landmark,
-      'latitude', loc.latitude,
-      'longitude', loc.longitude
+      -- Unreviewed address and GPS fields are never public; use a
+      -- separately reviewed coarse area label only.
+      'ward', null,
+      'community', null,
+      'area', r.public_area_label,
+      'street', null,
+      'landmark', null,
+      'latitude', null,
+      'longitude', null
     ),
     'assignedOffice', o.name,
     'submittedAt', r.created_at,
@@ -527,21 +545,9 @@ begin
       where u.report_id = r.id
         and u.visibility = 'public'
     ), '[]'::jsonb),
-    'media', coalesce((
-      select jsonb_agg(
-        jsonb_build_object(
-          'id', m.id,
-          'fileName', m.file_name,
-          'mediaKind', m.media_kind,
-          'bucket', m.bucket_name,
-          'storagePath', m.storage_path,
-          'createdAt', m.created_at
-        )
-        order by m.created_at asc
-      )
-      from public.report_media m
-      where m.report_id = r.id
-    ), '[]'::jsonb)
+    -- Never expose original evidence, storage paths, EXIF, faces or homes.
+    -- A curated public-media derivative will require its own review workflow.
+    'media', '[]'::jsonb
   )
   into payload
   from public.reports r
@@ -552,7 +558,12 @@ begin
   left join public.wards w on w.id = loc.ward_id
   left join public.offices o on o.id = r.assigned_office_id
   where upper(r.tracking_number) = upper(trim(tracking_number_input))
-    and r.public_tracking_enabled = true;
+    and r.public_tracking_enabled = true
+    and r.public_approved_at is not null
+    and r.public_approved_by is not null
+    and nullif(btrim(r.public_title), '') is not null
+    and nullif(btrim(r.public_description), '') is not null
+    and r.moderation_flag = 'none';
 
   return payload;
 end;
