@@ -28,3 +28,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Verify public map privacy, redaction and text-only chat
+        run: node --test tests/privacy-map.test.mjs
+
+      - name: Build the Next.js application
+        run: npm run build
