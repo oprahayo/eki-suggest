@@ -142,7 +142,7 @@ const wizardSteps: WizardStep[] = [
     id: "type",
     shortLabel: "Type",
     label: "Choose type",
-    description: "Pick the kind of submission you want to send into government channels.",
+    description: "Choose the type of private draft. Government delivery is not yet connected.",
     fields: ["kind"],
   },
   {
@@ -690,7 +690,7 @@ export function ReportComposer() {
 
     if (result.outcome === "queued" && result.pendingSubmission) {
       const pendingSubmission = result.pendingSubmission
-      toast.success("Your report was saved offline and queued for automatic send.")
+      toast.message("Text saved in this device's outbox. It will not be sent to a government office automatically.")
       startPageTransition(() => {
         startTransition(() => {
           router.push(`/report/success?queued=${encodeURIComponent(pendingSubmission.id)}`)
@@ -707,7 +707,7 @@ export function ReportComposer() {
     const submittedReport = result.report
 
     clearDraft()
-    toast.success(`Tracking number ${submittedReport.trackingNumber} created successfully.`)
+    toast.message(`Local reference ${submittedReport.trackingNumber} created on this device. Not submitted to government.`)
     startPageTransition(() => {
       startTransition(() => {
         router.push(
