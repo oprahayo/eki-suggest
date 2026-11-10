@@ -28,6 +28,21 @@ async function record(width, height) {
     document: document.documentElement.scrollWidth,
   }))
   assert.ok(fit.document <= fit.viewport, "Home overflow at " + width + "px: " + JSON.stringify(fit))
+  const composerFit = await page.evaluate(() => {
+    const composer = document.querySelector("form:has(#ekisignal-chat-message)")?.getBoundingClientRect()
+    const navigation = document.querySelector('nav')?.getBoundingClientRect()
+    return {
+      composerTop: composer?.top ?? -1,
+      composerBottom: composer?.bottom ?? -1,
+      composerWidth: composer?.width ?? -1,
+      navigationTop: navigation?.top ?? -1,
+      viewportWidth: innerWidth,
+    }
+  })
+  assert.ok(composerFit.composerTop >= 0 &&
+    composerFit.composerBottom <= composerFit.navigationTop + 12 &&
+    composerFit.composerWidth <= composerFit.viewportWidth,
+    "Text composer must remain above bottom navigation at " + width + "px: " + JSON.stringify(composerFit))
   await page.screenshot({ path: folder + "/home-" + width + ".png", fullPage: true })
 
   await page.locator("#ekisignal-chat-message").fill("Show the public reports map")
