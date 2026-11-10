@@ -330,7 +330,7 @@ export function PublicSignalsView() {
   const deferredSearch = useDeferredValue(search)
 
   const publicReports = useMemo(
-    () => materializePublicSignalReports(reports.filter((report) => report.isPublic)),
+    () => materializePublicSignalReports(reports),
     [reports]
   )
 
@@ -404,8 +404,11 @@ export function PublicSignalsView() {
               <h1 className="mt-2 text-[1.55rem] font-semibold tracking-tight text-foreground sm:text-[1.8rem]">
                 Reports across Ekiti State
               </h1>
+              <p role="status" className="mt-2 inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-950">
+                Demo map · No verified live government reports
+              </p>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Browse live public reports, open marker details, and follow case progress clearly.
+                Explore fictional report examples on the Ekiti map. Live cross-device cases and verified office responses are not yet connected.
               </p>
             </div>
 
@@ -502,7 +505,7 @@ export function PublicSignalsView() {
               Public signals
             </SheetTitle>
             <SheetDescription className="text-left leading-6">
-              Search the map, narrow the view, and open any public report.
+              Search the demonstration map, filter by area, and open a fictional example.
             </SheetDescription>
           </SheetHeader>
 
