@@ -73,6 +73,9 @@ export function PublicSignalSheet({
               <DrawerTitle className="mt-3 text-left text-xl font-semibold tracking-tight md:text-[1.75rem]">
                 {report.title}
               </DrawerTitle>
+              {report.source === "demo" ? (
+                <p className="mt-2 text-xs font-semibold text-amber-800">Fictional preview · No verified government activity</p>
+              ) : null}
               <DrawerDescription className="mt-2 max-w-2xl text-left leading-6">
                 {report.description}
               </DrawerDescription>
@@ -122,6 +125,11 @@ export function PublicSignalSheet({
                 {[report.location.area || report.location.community, report.location.lga]
                   .filter(Boolean)
                   .join(", ")}
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {report.mapPositionKind === "approximate"
+                  ? "Approximate map position based on available area information—not an exact address."
+                  : "Location provided for this fictional example."}
               </p>
             </div>
             <div className="surface-panel rounded-[1.4rem] px-4 py-3.5 shadow-soft">
