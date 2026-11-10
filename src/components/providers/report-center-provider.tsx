@@ -328,14 +328,14 @@ function createReportRecord(
     estimatedResponse: getEstimatedResponse(input.severity),
     createdAt: now,
     updatedAt: now,
-    isPublic: true,
+    isPublic: false,
     source: "submitted",
     deliveryState: options?.deliveryState ?? "device-only",
     updates: [
       {
         id: `${trackingNumber}-received`,
-        title: "Report received",
-        note: "Your report has been logged and is waiting for screening and assignment.",
+        title: "Local report prepared",
+        note: "Saved on this device only. No government office has received or acknowledged it.",
         status: "Received",
         actorName: "EkiSignal Intake",
         actorRole: "Citizen platform",
@@ -350,7 +350,7 @@ function createSubmissionNotification(report: ReportRecord): AppNotification {
   return {
     id: `${report.trackingNumber}-notification`,
     title: `Tracking number ${report.trackingNumber} created`,
-    body: `Your report has been routed to ${report.assignedOfficeName}.`,
+    body: "Saved only on this device. No official submission or government receipt has occurred.",
     kind: "status",
     createdAt: report.createdAt,
     read: false,
@@ -773,7 +773,7 @@ export function ReportCenterProvider({
           notification: {
             id: `${pendingSubmission.id}-synced`,
             title: `Offline report ${report.trackingNumber} is now ready`,
-            body: `Your saved submission has been restored into the live citizen timeline for ${report.assignedOfficeName}.`,
+            body: "Your queued submission was restored on this device. It has not been sent to a government office.",
             kind: "status",
             createdAt: new Date().toISOString(),
             read: false,
