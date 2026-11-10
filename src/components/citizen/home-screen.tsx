@@ -87,7 +87,7 @@ export function HomeScreen() {
           <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#215b47] text-lg font-semibold text-white" aria-hidden="true">E</div>
           <div className="min-w-0 flex-1">
             <h1 className="text-[17px] font-semibold leading-tight tracking-[-0.02em]">EkiSignal</h1>
-            <p className="mt-1 text-xs text-[#626b70]">Ekiti community chat</p>
+            <p className="mt-1 truncate text-xs text-[#626b70]">Ekiti community chat</p>
           </div>
           {lines.length > 0 ? (
             <button
@@ -108,19 +108,19 @@ export function HomeScreen() {
             <span className="mb-1 block text-xs font-semibold text-[#215b47]">EkiSignal</span>
             <p>Hi! What would you like to do in Ekiti today?</p>
             <p className="mt-2 text-xs text-muted-foreground">
-              I can guide you to a report, public map, tracking, or community notices. This is an independent civic project, not an emergency dispatch service.
+              Text-only help with reports, the map, tracking and notices. Independent civic project; not an emergency dispatch service.
             </p>
           </div>
 
           {lines.length === 0 ? (
             <div className="flex max-w-full flex-wrap gap-2" aria-label="Start a conversation">
-              <Link href="/report/new" className="inline-flex min-h-11 items-center rounded-full border border-[#cbd3d0] bg-white px-4 py-2 text-[13px] font-medium text-[#245641] transition-colors hover:border-[#7ea791] hover:bg-[#f6faf7]">
+              <Link href="/report/new" className="inline-flex min-h-11 items-center rounded-full border border-[#cbd3d0] bg-white px-3 py-2 text-xs font-medium text-[#245641] transition-colors hover:border-[#7ea791] hover:bg-[#f6faf7]">
                 Report an issue
               </Link>
-              <Link href="/track" className="inline-flex min-h-11 items-center rounded-full border border-[#cbd3d0] bg-white px-4 py-2 text-[13px] font-medium text-[#245641] transition-colors hover:border-[#7ea791] hover:bg-[#f6faf7]">
+              <Link href="/track" className="inline-flex min-h-11 items-center rounded-full border border-[#cbd3d0] bg-white px-3 py-2 text-xs font-medium text-[#245641] transition-colors hover:border-[#7ea791] hover:bg-[#f6faf7]">
                 Track a number
               </Link>
-              <Link href="/alerts" className="inline-flex min-h-11 items-center rounded-full border border-[#cbd3d0] bg-white px-4 py-2 text-[13px] font-medium text-[#245641] transition-colors hover:border-[#7ea791] hover:bg-[#f6faf7]">
+              <Link href="/alerts" className="inline-flex min-h-11 items-center rounded-full border border-[#cbd3d0] bg-white px-3 py-2 text-xs font-medium text-[#245641] transition-colors hover:border-[#7ea791] hover:bg-[#f6faf7]">
                 Community notices
               </Link>
             </div>
