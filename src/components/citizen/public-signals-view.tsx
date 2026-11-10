@@ -396,7 +396,7 @@ export function PublicSignalsView() {
     <>
       <section className="mx-auto w-full max-w-7xl px-2 pb-2 sm:px-6">
         <div className="surface-panel flex h-[calc(100dvh-13.75rem-env(safe-area-inset-bottom))] min-h-[25rem] flex-col overflow-hidden rounded-[1.4rem] shadow-soft md:rounded-[2rem]">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/58 px-3 py-3 md:gap-4 md:px-5 md:py-4">
+          <div className="flex flex-col items-stretch gap-2 border-b border-white/58 px-3 py-3 md:flex-row md:items-center md:justify-between md:gap-4 md:px-5 md:py-4">
             <div className="min-w-0 max-w-2xl flex-1">
               <p className="hidden text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-primary/72 md:block">
                 Public signals map
@@ -412,7 +412,7 @@ export function PublicSignalsView() {
               </p>
             </div>
 
-            <div className="flex shrink-0 flex-wrap items-center gap-2">
+            <div className="flex w-full shrink-0 items-center justify-start gap-2 md:w-auto md:flex-wrap md:justify-end">
               <div className="hidden rounded-full border border-white/66 bg-white/82 px-3 py-2 shadow-[0_14px_32px_-28px_rgba(9,31,22,0.24)] md:block">
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/68">
                   {selectedArea}
