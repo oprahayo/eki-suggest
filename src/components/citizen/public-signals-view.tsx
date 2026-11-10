@@ -407,7 +407,7 @@ export function PublicSignalsView() {
               <p role="status" className="mt-1 inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-semibold text-amber-950 md:mt-2 md:px-3 md:text-xs">
                 Demo map · No verified live government reports
               </p>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              <p className="mt-2 hidden md:block text-sm leading-6 text-muted-foreground">
                 Explore fictional report examples on the Ekiti map. Live cross-device cases and verified office responses are not yet connected.
               </p>
             </div>
@@ -418,12 +418,12 @@ export function PublicSignalsView() {
                   {selectedArea}
                 </span>
               </div>
-              <div className="rounded-full border border-white/66 bg-white/82 px-3 py-2 shadow-[0_14px_32px_-28px_rgba(9,31,22,0.24)]">
+              <div className="hidden rounded-full border border-white/66 bg-white/82 px-3 py-2 shadow-[0_14px_32px_-28px_rgba(9,31,22,0.24)] md:block">
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/68">
                   {summary.activeSignals} open
                 </span>
               </div>
-              <div className="rounded-full border border-white/66 bg-white/82 px-3 py-2 shadow-[0_14px_32px_-28px_rgba(9,31,22,0.24)]">
+              <div className="hidden rounded-full border border-white/66 bg-white/82 px-3 py-2 shadow-[0_14px_32px_-28px_rgba(9,31,22,0.24)] md:block">
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/68">
                   {summary.criticalSignals} critical
                 </span>
