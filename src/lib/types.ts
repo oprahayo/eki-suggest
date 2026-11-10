@@ -118,6 +118,8 @@ export interface ReportRecord {
   updatedAt: string
   isPublic: boolean
   source: "demo" | "submitted"
+  /** Distinguishes supplied positions from rough area estimates. */
+  mapPositionKind?: "provided" | "approximate"
   deliveryState?: ReportDeliveryState
   civicPoints?: number
   rewardStatus?: "under_review" | "eligible" | "rewarded" | "not_eligible"
