@@ -39,12 +39,24 @@ async function record(width, height) {
   await page.getByRole("heading", { name: "Reports across Ekiti State" }).waitFor({ timeout: 15000 })
   await page.getByText("Demo map · No verified live government reports").waitFor({ timeout: 10000 })
   await page.waitForTimeout(2500)
-  const map = await page.evaluate(() => ({
-    viewport: innerWidth,
-    document: document.documentElement.scrollWidth,
-    markers: document.querySelectorAll(".ekisignal-report-marker-shell").length,
-  }))
+  const map = await page.evaluate(() => {
+    const frame = document.querySelector(".leaflet-container")?.getBoundingClientRect()
+    const visibleHeight = frame
+      ? Math.max(0, Math.min(frame.bottom, innerHeight - 112) - Math.max(0, frame.top))
+      : 0
+    return {
+      viewport: innerWidth,
+      document: document.documentElement.scrollWidth,
+      markers: document.querySelectorAll(".ekisignal-report-marker-shell").length,
+      mapTop: frame?.top ?? null,
+      mapHeight: frame?.height ?? 0,
+      visibleHeight,
+    }
+  })
   assert.ok(map.document <= map.viewport, "Map overflow at " + width + "px: " + JSON.stringify(map))
+  assert.ok(map.markers >= 1, "Public example markers absent at " + width + "px")
+  assert.ok(map.visibleHeight >= (width <= 300 ? 175 : 240),
+    "Public map must remain prominently visible at " + width + "px: " + JSON.stringify(map))
   await page.screenshot({ path: folder + "/public-map-" + width + ".png", fullPage: true })
   if (width <= 390) {
     await page.getByRole("button", { name: "Filters" }).click()
