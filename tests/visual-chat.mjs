@@ -43,6 +43,14 @@ async function record(width, height) {
     composerFit.composerBottom <= composerFit.navigationTop + 12 &&
     composerFit.composerWidth <= composerFit.viewportWidth,
     "Text composer must remain above bottom navigation at " + width + "px: " + JSON.stringify(composerFit))
+  const actionFit = await page.evaluate(() => {
+    const links = [...document.querySelectorAll('[aria-label="Start a conversation"] a')]
+    const lastActionBottom = Math.max(...links.map(link => link.getBoundingClientRect().bottom))
+    const composerTop = document.querySelector("form:has(#ekisignal-chat-message)")?.getBoundingClientRect().top ?? 0
+    return { lastActionBottom, composerTop }
+  })
+  assert.ok(actionFit.lastActionBottom + 8 <= actionFit.composerTop,
+    "All three initial chat shortcuts must fit above the composer at " + width + "px: " + JSON.stringify(actionFit))
   await page.screenshot({ path: folder + "/home-" + width + ".png", fullPage: true })
 
   await page.locator("#ekisignal-chat-message").fill("Show the public reports map")
