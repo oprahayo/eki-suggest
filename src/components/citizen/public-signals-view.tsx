@@ -179,7 +179,7 @@ function SignalsSidebar({
         <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-primary/72">
           Filters
         </p>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+        <p className="mt-2 hidden text-sm leading-6 text-muted-foreground md:block">
           Search, narrow the list, and open any report on the map.
         </p>
       </div>
@@ -394,17 +394,17 @@ export function PublicSignalsView() {
 
   return (
     <>
-      <section className="mx-auto w-full max-w-7xl px-4 pb-4 sm:px-6">
-        <div className="surface-panel overflow-hidden rounded-[2rem] shadow-soft md:flex md:min-h-[42rem] md:h-[calc(100svh-15rem)] md:flex-col">
-          <div className="flex flex-col gap-4 border-b border-white/58 px-4 py-4 sm:px-5 md:flex-row md:items-start md:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-primary/72">
+      <section className="mx-auto w-full max-w-7xl px-2 pb-2 sm:px-6">
+        <div className="surface-panel flex h-[calc(100dvh-13.75rem-env(safe-area-inset-bottom))] min-h-[25rem] flex-col overflow-hidden rounded-[1.4rem] shadow-soft md:rounded-[2rem]">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/58 px-3 py-3 md:gap-4 md:px-5 md:py-4">
+            <div className="min-w-0 max-w-2xl flex-1">
+              <p className="hidden text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-primary/72 md:block">
                 Public signals map
               </p>
-              <h1 className="mt-2 text-[1.55rem] font-semibold tracking-tight text-foreground sm:text-[1.8rem]">
+              <h1 className="text-lg font-semibold leading-snug tracking-tight text-foreground md:mt-2 md:text-[1.8rem]">
                 Reports across Ekiti State
               </h1>
-              <p role="status" className="mt-2 inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-950">
+              <p role="status" className="mt-1 inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-semibold text-amber-950 md:mt-2 md:px-3 md:text-xs">
                 Demo map · No verified live government reports
               </p>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -412,8 +412,8 @@ export function PublicSignalsView() {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="rounded-full border border-white/66 bg-white/82 px-3 py-2 shadow-[0_14px_32px_-28px_rgba(9,31,22,0.24)]">
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
+              <div className="hidden rounded-full border border-white/66 bg-white/82 px-3 py-2 shadow-[0_14px_32px_-28px_rgba(9,31,22,0.24)] md:block">
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/68">
                   {selectedArea}
                 </span>
@@ -442,7 +442,7 @@ export function PublicSignalsView() {
             </div>
           </div>
 
-          <div className="grid md:min-h-0 md:flex-1 md:grid-cols-[20rem_minmax(0,1fr)]">
+          <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] md:grid-cols-[20rem_minmax(0,1fr)]">
             <aside className="hidden border-r border-white/58 md:block md:min-h-0">
               <SignalsSidebar
                 counts={counts}
@@ -461,19 +461,19 @@ export function PublicSignalsView() {
               />
             </aside>
 
-            <section className="relative min-h-[32rem] p-3 sm:p-4 md:min-h-0">
+            <section className="relative min-h-0 p-2 sm:p-4">
               <div className="absolute left-6 top-6 z-20 rounded-full border border-white/66 bg-white/84 px-3 py-2 shadow-[0_18px_42px_-28px_rgba(9,31,22,0.32)] backdrop-blur-xl">
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/72">
                   {visibleReports.length} visible
                 </span>
               </div>
-              <div className="absolute right-6 top-6 z-20 rounded-full border border-white/66 bg-white/84 px-3 py-2 shadow-[0_18px_42px_-28px_rgba(9,31,22,0.32)] backdrop-blur-xl">
+              <div className="absolute right-6 top-6 z-20 hidden rounded-full border border-white/66 bg-white/84 px-3 py-2 shadow-[0_18px_42px_-28px_rgba(9,31,22,0.32)] backdrop-blur-xl md:block">
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/72">
                   Ekiti map
                 </span>
               </div>
 
-              <div className="h-[26rem] overflow-hidden rounded-[1.6rem] sm:h-[30rem] md:h-full">
+              <div className="h-full min-h-[16rem] overflow-hidden rounded-[1.2rem] md:rounded-[1.6rem]">
                 <MapView
                   areaLabel={selectedArea}
                   reports={visibleReports}
@@ -497,8 +497,8 @@ export function PublicSignalsView() {
       <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
         <SheetContent
           side="left"
-          style={{ top: "calc(5.35rem + env(safe-area-inset-top))" }}
-          className="w-[88vw] border-white/50 bg-[linear-gradient(180deg,rgba(249,250,245,0.98),rgba(242,246,239,0.96))] p-0 text-foreground shadow-[0_34px_110px_-56px_rgba(8,28,20,0.54)] backdrop-blur-2xl sm:max-w-sm"
+          style={{ top: "calc(5.35rem + env(safe-area-inset-top))", bottom: "calc(6.25rem + env(safe-area-inset-bottom))", height: "auto" }}
+          className="w-[88vw] overflow-y-auto border-white/50 bg-[linear-gradient(180deg,rgba(249,250,245,0.98),rgba(242,246,239,0.96))] p-0 text-foreground shadow-[0_34px_110px_-56px_rgba(8,28,20,0.54)] backdrop-blur-2xl sm:max-w-sm"
         >
           <SheetHeader className="border-b border-white/58 px-5 pt-5 pb-4">
             <SheetTitle className="text-left text-2xl font-semibold tracking-tight">
